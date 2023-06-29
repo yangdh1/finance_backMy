@@ -28,4 +28,7 @@
     <ProjectReference Include="..\Finance.Core\Finance.Core.csproj" />
     <ProjectReference Include="..\Finance.EntityFrameworkCore\Finance.EntityFrameworkCore.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BaseLibrary\" />
+  </ItemGroup>
 </Project>

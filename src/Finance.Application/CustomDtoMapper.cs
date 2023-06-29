@@ -4,6 +4,7 @@ using Finance.Audit;
 using Finance.Audit.Dto;
 using Finance.Authorization.Roles;
 using Finance.Authorization.Users;
+using Finance.BaseLibrary;
 using Finance.EngineeringDepartment;
 using Finance.EngineeringDepartment.Dto;
 using Finance.Ext;
@@ -180,7 +181,14 @@ namespace Finance
                 .ForMember(p => p.UnitPrice, p => p.MapFrom(o => o.MaterialPriceCyn))
                 .ForMember(p => p.Amount, p => p.MapFrom(o => o.TotalMoneyCyn));
 
+            configuration.CreateMap<ProcessMaintenanceDto, BaseProcessMaintenance>();
+            configuration.CreateMap<BaseProcessMaintenance, ProcessMaintenanceDto>();
 
+            configuration.CreateMap<ProcesshoursenteritemDto, Processhoursenteritem>();
+            configuration.CreateMap<Processhoursenteritem, ProcesshoursenteritemDto>();
+
+            configuration.CreateMap<ProcesshoursenterDto, Processhoursenter>();
+            configuration.CreateMap<Processhoursenter, ProcesshoursenterDto>();
         }
     }
 }

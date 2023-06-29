@@ -17,6 +17,7 @@ using Abp.Zero.EntityFrameworkCore;
 using Finance.Audit;
 using Finance.Authorization.Roles;
 using Finance.Authorization.Users;
+using Finance.BaseLibrary;
 using Finance.EngineeringDepartment;
 using Finance.Entering;
 using Finance.FinanceMaintain;
@@ -153,6 +154,20 @@ namespace Finance.EntityFrameworkCore
         /// </summary>
         public virtual DbSet<UpdateLogInfo> UpdateLog { get; set; }
 
+        /// <summary>
+        /// 工序维护
+        /// </summary>
+        public virtual DbSet<BaseProcessMaintenance> ProcessMaintenance { get; set; }
+
+        /// <summary>
+        /// 工序工时明细
+        /// </summary>
+        public virtual DbSet<Processhoursenteritem> ProcesshoursenterItem { get; set; }
+        /// <summary>
+        /// 工序详情
+        /// </summary>
+        public virtual DbSet<Processhoursenter> Processhoursenter { get; set; }
+
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options)
             : base(options)
         {
@@ -284,6 +299,10 @@ namespace Finance.EntityFrameworkCore
             modelBuilder.Entity<StructBomDifferent>().ToTable("StructBomDifferent");
             modelBuilder.Entity<ElectronicBomInfoBak>().ToTable("ElectronicBomInfoBak");
             modelBuilder.Entity<StructureBomInfoBak>().ToTable("StructureBomInfoBak");
+
+            modelBuilder.Entity<BaseProcessMaintenance>().ToTable("Base_Process_Maintenance");
+            modelBuilder.Entity<Processhoursenteritem>().ToTable("ProcessHoursEnteritem");
+            modelBuilder.Entity<Processhoursenter>().ToTable("ProcessHoursEnter");
 
             base.OnModelCreating(modelBuilder);
         }
