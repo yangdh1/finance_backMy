@@ -1,0 +1,18 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/src/Finance.Application/bin/Debug/net6.0
+/src/Finance.Application/obj/Debug/net6.0
+/src/Finance.Application/obj
+/src/Finance.Core/bin/Debug/net6.0
+/src/Finance.Core/obj/Debug/net6.0
+/src/Finance.Core/obj
+/src/Finance.EntityFrameworkCore/bin/Debug/net6.0
+/src/Finance.EntityFrameworkCore/obj
+/src/Finance.Migrator/bin/Debug/net6.0
+/src/Finance.Migrator/obj
+/src/Finance.Web.Core
+/.vs/Finance
+/src/Finance.Web.Host/obj
+/src/Finance.Web.Host/bin/Debug/net6.0
