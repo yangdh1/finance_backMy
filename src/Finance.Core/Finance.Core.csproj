@@ -27,7 +27,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Sundial.Dashboard" Version="2.7.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BaseLibrary\" />
-  </ItemGroup>
 </Project>
