@@ -17,6 +17,7 @@ using Abp.Zero.EntityFrameworkCore;
 using Finance.Audit;
 using Finance.Authorization.Roles;
 using Finance.Authorization.Users;
+using Finance.BaseLibrary;
 using Finance.EngineeringDepartment;
 using Finance.Entering;
 using Finance.FinanceMaintain;
@@ -153,6 +154,84 @@ namespace Finance.EntityFrameworkCore
         /// </summary>
         public virtual DbSet<UpdateLogInfo> UpdateLog { get; set; }
 
+        // 基础库
+        /// <summary>
+        /// 基础库--设备库
+        /// </summary>
+        public virtual DbSet<FoundationDevice> FoundationDevice { get; set; }
+        /// <summary>
+        /// 基础库---设备明细
+        /// </summary>
+        public virtual DbSet<FoundationDeviceItem> FoundationDeviceItem { get; set; }
+        /// <summary>
+        /// 基础库--EMC
+        /// </summary>
+        public virtual DbSet<FoundationEmc> FoundationEmc { get; set; }
+        /// <summary>
+        /// 基础库--治具检具库界面
+        /// </summary>
+        public virtual DbSet<FoundationFixture> FoundationFixture { get; set; }
+        /// <summary>
+        /// 基础库---治具检具库界面明细
+        /// </summary>
+        public virtual DbSet<FoundationFixtureItem> FoundationFixtureItem { get; set; }
+        /// <summary>
+        /// 基础库--硬件库
+        /// </summary>
+        public virtual DbSet<FoundationHardware> FoundationHardware { get; set; }
+        /// <summary>
+        /// 基础库--硬件库明细
+        /// </summary>
+        public virtual DbSet<FoundationHardwareItem> FoundationHardwareItem { get; set; }
+        /// <summary>
+        /// 基础库--日志表
+        /// </summary>
+        public virtual DbSet<FoundationLogs> FoundationLogs { get; set; }
+        /// <summary>
+        /// 基础库--工装库
+        /// </summary>
+        public virtual DbSet<FoundationProcedure> FoundationProcedure { get; set; }
+        /// <summary>
+        /// 基础库--实验库环境
+        /// </summary>
+        public virtual DbSet<Foundationreliable> Foundationreliable { get; set; }
+        /// <summary>
+        /// 基础库--工序工时
+        /// </summary>
+        public virtual DbSet<FoundationReliableProcessHours> FoundationReliableProcessHours { get; set; }
+        /// <summary>
+        /// 基础库--标准工艺库
+        /// </summary>
+        public virtual DbSet<FoundationStandardTechnology> FoundationStandardTechnology { get; set; }
+        /// <summary>
+        /// 基础库--设备信息
+        /// </summary>
+        public virtual DbSet<FoundationTechnologyDevice> FoundationTechnologyDevice { get; set; }
+        /// <summary>
+        /// 基础库--工序工时工装治置
+        /// </summary>
+        public virtual DbSet<FoundationTechnologyFixture> FoundationTechnologyFixture { get; set; }
+        /// <summary>
+        /// 基础库--工序工时硬件设备
+        /// </summary>
+        public virtual DbSet<FoundationTechnologyFrock> FoundationTechnologyFrock { get; set; }
+        /// <summary>
+        /// 基础库--工时工序追溯部分(硬件及软件开发费用)
+        /// </summary>
+        public virtual DbSet<FoundationTechnologyHardware> FoundationTechnologyHardware { get; set; }
+        /// <summary>
+        /// 基础库--工时库
+        /// </summary>
+        public virtual DbSet<FoundationWorkingHour> FoundationWorkingHour { get; set; }
+        /// <summary>
+        /// 基础库--工时库明细
+        /// </summary>
+        public virtual DbSet<FoundationWorkingHourItem> FoundationWorkingHourItem { get; set; }
+        /// <summary>
+        /// 物流信息录入
+        /// </summary>
+        public virtual DbSet<Logisticscost> Logisticscost { get; set; }
+        
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options)
             : base(options)
         {
@@ -284,6 +363,27 @@ namespace Finance.EntityFrameworkCore
             modelBuilder.Entity<StructBomDifferent>().ToTable("StructBomDifferent");
             modelBuilder.Entity<ElectronicBomInfoBak>().ToTable("ElectronicBomInfoBak");
             modelBuilder.Entity<StructureBomInfoBak>().ToTable("StructureBomInfoBak");
+
+            // 基础库
+            modelBuilder.Entity<FoundationDevice>().ToTable("FoundationDevice");
+            modelBuilder.Entity<FoundationDeviceItem>().ToTable("FoundationDeviceItem");
+            modelBuilder.Entity<FoundationEmc>().ToTable("FoundationEmc");
+            modelBuilder.Entity<FoundationFixture>().ToTable("FoundationFixture");
+            modelBuilder.Entity<FoundationFixtureItem>().ToTable("FoundationFixtureItem");
+            modelBuilder.Entity<FoundationHardware>().ToTable("FoundationHardware");
+            modelBuilder.Entity<FoundationHardwareItem>().ToTable("FoundationHardwareItem");
+            modelBuilder.Entity<FoundationLogs>().ToTable("FoundationLogs");
+            modelBuilder.Entity<FoundationProcedure>().ToTable("FoundationProcedure");
+            modelBuilder.Entity<Foundationreliable>().ToTable("FoundationReliable");
+            modelBuilder.Entity<FoundationReliableProcessHours>().ToTable("FoundationReliableProcessHours");
+            modelBuilder.Entity<FoundationStandardTechnology>().ToTable("FoundationStandardTechnology");
+            modelBuilder.Entity<FoundationTechnologyDevice>().ToTable("FoundationTechnologyDevice");
+            modelBuilder.Entity<FoundationTechnologyFixture>().ToTable("FoundationTechnologyFixture");
+            modelBuilder.Entity<FoundationTechnologyFrock>().ToTable("FoundationTechnologyFrock");
+            modelBuilder.Entity<FoundationTechnologyHardware>().ToTable("FoundationTechnologyHardware");
+            modelBuilder.Entity<FoundationWorkingHour>().ToTable("FoundationWorkingHour");
+            modelBuilder.Entity<FoundationWorkingHourItem>().ToTable("FoundationWorkingHourItem");
+            modelBuilder.Entity<Logisticscost>().ToTable("LogisticsCost");
 
             base.OnModelCreating(modelBuilder);
         }
