@@ -17,5 +17,6 @@ namespace Finance.BaseLibrary
         public System.Nullable<System.Int64> CreatorUserId { get; set; }
         public string Remark { get; set; }
         public string Version { get; set; }
+        public int? Type { get; set; }
     }
 }

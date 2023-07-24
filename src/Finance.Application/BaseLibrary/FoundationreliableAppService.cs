@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
+using Finance.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,17 @@ namespace Finance.BaseLibrary
     public class FoundationreliableAppService : ApplicationService
     {
         private readonly IRepository<Foundationreliable, long> _foundationreliableRepository;
+        private readonly IRepository<User, long> _userRepository;
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="foundationreliableRepository"></param>
         public FoundationreliableAppService(
-            IRepository<Foundationreliable, long> foundationreliableRepository)
+            IRepository<Foundationreliable, long> foundationreliableRepository,
+            IRepository<User, long> userRepository)
         {
             _foundationreliableRepository = foundationreliableRepository;
+            _userRepository = userRepository;   
         }
 
         /// <summary>
@@ -77,6 +81,14 @@ namespace Finance.BaseLibrary
             var list = query.ToList();
             //数据转换
             var dtos = ObjectMapper.Map<List<Foundationreliable>, List<FoundationreliableDto>>(list, new List<FoundationreliableDto>());
+            foreach (var item in dtos) 
+            {
+                var user = this._userRepository.GetAll().Where(u => u.Id == item.CreatorUserId).ToList().FirstOrDefault();
+                if (user != null)
+                {
+                    item.LastModifierUserName = user.Name;
+                }
+            }
             // 数据返回
             return dtos;
         }
@@ -102,12 +114,14 @@ namespace Finance.BaseLibrary
         {
             var entity = ObjectMapper.Map<FoundationreliableDto, Foundationreliable>(input, new Foundationreliable());
             var maxId = this._foundationreliableRepository.GetAll().Max(t => t.Id);
-            input.CreationTime = DateTime.Now;
-            input.Id = maxId + 1;
+            entity.CreationTime = DateTime.Now;
+            entity.Id = maxId + 1;
             if (AbpSession.UserId != null)
             {
-                input.CreatorUserId = AbpSession.UserId.Value;
+                entity.CreatorUserId = AbpSession.UserId.Value;
+                entity.LastModificationTime = DateTime.Now; 
             }
+            entity.LastModificationTime = DateTime.Now;
             entity = await _foundationreliableRepository.InsertAsync(entity);
             return ObjectMapper.Map<Foundationreliable, FoundationreliableDto>(entity, new FoundationreliableDto());
         }
