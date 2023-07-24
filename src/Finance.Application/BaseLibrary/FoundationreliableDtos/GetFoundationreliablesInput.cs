@@ -7,5 +7,13 @@ namespace Finance.BaseLibrary
     /// </summary>
     public class GetFoundationreliablesInput: PagedInputDto
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public string Classification { get; set; }
     }
 }
