@@ -17,8 +17,9 @@ namespace Finance.BaseLibrary
         public System.Nullable<System.Int64> CreatorUserId { get; set; }
         public string Classification { get; set; }
         public string Name { get; set; }
-        public string Price { get; set; }
+        public double? Price { get; set; }
         public string Unit { get; set; }
+        public string Laboratory { get; set; }
 
         /// <summary>
         /// 维护人
