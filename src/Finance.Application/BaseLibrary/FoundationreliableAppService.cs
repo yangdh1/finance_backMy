@@ -101,6 +101,13 @@ namespace Finance.BaseLibrary
         public virtual async Task<FoundationreliableDto> CreateAsync(FoundationreliableDto input)
         {
             var entity = ObjectMapper.Map<FoundationreliableDto, Foundationreliable>(input, new Foundationreliable());
+            var maxId = this._foundationreliableRepository.GetAll().Max(t => t.Id);
+            input.CreationTime = DateTime.Now;
+            input.Id = maxId + 1;
+            if (AbpSession.UserId != null)
+            {
+                input.CreatorUserId = AbpSession.UserId.Value;
+            }
             entity = await _foundationreliableRepository.InsertAsync(entity);
             return ObjectMapper.Map<Foundationreliable, FoundationreliableDto>(entity, new FoundationreliableDto());
         }
@@ -115,6 +122,11 @@ namespace Finance.BaseLibrary
         {
             Foundationreliable entity = await _foundationreliableRepository.GetAsync(input.Id);
             entity = ObjectMapper.Map<FoundationreliableDto, Foundationreliable>(input, entity);
+            entity.LastModificationTime = DateTime.Now;
+            if (AbpSession.UserId != null)
+            {
+                entity.LastModifierUserId = AbpSession.UserId.Value;
+            }
             entity = await _foundationreliableRepository.UpdateAsync(entity);
             return ObjectMapper.Map<Foundationreliable, FoundationreliableDto>(entity, new FoundationreliableDto());
         }
