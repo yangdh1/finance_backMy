@@ -49,11 +49,11 @@ namespace Finance.BaseLibrary
         }
 
         /// <summary>
-        /// 列表
+        /// 列表-带分页
         /// </summary>
         /// <param name="input">查询条件</param>
         /// <returns>结果</returns>
-        public virtual async Task<PagedResultDto<FoundationreliableDto>> GetListAsync(GetFoundationreliablesInput input)
+        public virtual async Task<PagedResultDto<FoundationreliableDto>> GetListByPagingAsync(GetFoundationreliablesInput input)
         {
             // 设置查询条件
             var query = this._foundationreliableRepository.GetAll().Where(t => t.IsDeleted == false);
@@ -68,11 +68,11 @@ namespace Finance.BaseLibrary
         }
 
         /// <summary>
-        /// 列表
+        /// 列表-无分页功能
         /// </summary>
         /// <param name="input">查询条件</param>
         /// <returns>结果</returns>
-        public virtual async Task<List<FoundationreliableDto>> GetListAllByNameAsync(GetFoundationreliablesInput input)
+        public virtual async Task<List<FoundationreliableDto>> GetListAllAsync(GetFoundationreliablesInput input)
         {
             // 设置查询条件
             var query = this._foundationreliableRepository.GetAll().Where(t => t.IsDeleted == false);
