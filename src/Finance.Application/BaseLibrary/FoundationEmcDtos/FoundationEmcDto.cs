@@ -19,5 +19,9 @@ namespace Finance.BaseLibrary
         public string Name { get; set; }
         public System.Nullable<System.Decimal> Price { get; set; }
         public string Unit { get; set; }
+        /// <summary>
+        /// 维护人
+        /// </summary>
+        public string LastModifierUserName { get; set; }
     }
 }
