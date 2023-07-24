@@ -17,16 +17,23 @@ namespace Finance.BaseLibrary
     {
         private readonly IRepository<Foundationreliable, long> _foundationreliableRepository;
         private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<FoundationLogs, long> _foundationLogsRepository;
+        /// <summary>
+        /// 日志类型
+        /// </summary>
+        private readonly int logType = 1;
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="foundationreliableRepository"></param>
         public FoundationreliableAppService(
             IRepository<Foundationreliable, long> foundationreliableRepository,
-            IRepository<User, long> userRepository)
+            IRepository<User, long> userRepository,
+            IRepository<FoundationLogs, long> foundationLogsRepository)
         {
             _foundationreliableRepository = foundationreliableRepository;
-            _userRepository = userRepository;   
+            _userRepository = userRepository;
+            _foundationLogsRepository = foundationLogsRepository;
         }
 
         /// <summary>
@@ -81,7 +88,7 @@ namespace Finance.BaseLibrary
             var list = query.ToList();
             //数据转换
             var dtos = ObjectMapper.Map<List<Foundationreliable>, List<FoundationreliableDto>>(list, new List<FoundationreliableDto>());
-            foreach (var item in dtos) 
+            foreach (var item in dtos)
             {
                 var user = this._userRepository.GetAll().Where(u => u.Id == item.CreatorUserId).ToList().FirstOrDefault();
                 if (user != null)
@@ -119,10 +126,11 @@ namespace Finance.BaseLibrary
             if (AbpSession.UserId != null)
             {
                 entity.CreatorUserId = AbpSession.UserId.Value;
-                entity.LastModificationTime = DateTime.Now; 
+                entity.LastModificationTime = DateTime.Now;
             }
             entity.LastModificationTime = DateTime.Now;
             entity = await _foundationreliableRepository.InsertAsync(entity);
+            await this.CreateLog("add");
             return ObjectMapper.Map<Foundationreliable, FoundationreliableDto>(entity, new FoundationreliableDto());
         }
 
@@ -142,6 +150,7 @@ namespace Finance.BaseLibrary
                 entity.LastModifierUserId = AbpSession.UserId.Value;
             }
             entity = await _foundationreliableRepository.UpdateAsync(entity);
+            await this.CreateLog("");
             return ObjectMapper.Map<Foundationreliable, FoundationreliableDto>(entity, new FoundationreliableDto());
         }
 
@@ -152,7 +161,43 @@ namespace Finance.BaseLibrary
         /// <returns></returns>
         public virtual async Task DeleteAsync(long id)
         {
-            await _foundationreliableRepository.DeleteAsync(s => s.Id == id);
+            Foundationreliable entity = await _foundationreliableRepository.GetAsync(id);
+            entity.DeletionTime = DateTime.Now;
+            entity.IsDeleted = true;
+            if (AbpSession.UserId != null)
+            {
+                entity.DeleterUserId = AbpSession.UserId.Value;
+            }
+            entity = await _foundationreliableRepository.UpdateAsync(entity);
+        }
+
+        /// <summary>
+        /// 添加日志
+        /// </summary>
+        private async Task<bool> CreateLog(string type)
+        {
+            FoundationLogs entity = new FoundationLogs()
+            {
+                IsDeleted = false,
+                DeletionTime = DateTime.Now,
+                LastModificationTime = DateTime.Now,
+                Remark = "test",
+                Type = logType,
+                Version = "001"
+            };
+            if (AbpSession.UserId != null)
+            {
+                entity.LastModifierUserId = AbpSession.UserId.Value;
+                if ("add".Equals(type))
+                {
+                    entity.CreatorUserId = AbpSession.UserId.Value;
+                    entity.CreationTime = DateTime.Now;
+                }
+            }
+            var maxId = this._foundationLogsRepository.GetAll().Max(t => t.Id);
+            entity.Id = maxId + 1;
+            entity = await _foundationLogsRepository.InsertAsync(entity);
+            return true;
         }
     }
 }
