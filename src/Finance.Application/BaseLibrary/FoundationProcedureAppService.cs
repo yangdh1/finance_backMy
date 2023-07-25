@@ -1,8 +1,12 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
+using Microsoft.AspNetCore.Http;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -10,7 +14,7 @@ using System.Threading.Tasks;
 namespace Finance.BaseLibrary
 {
     /// <summary>
-    /// 管理
+    /// 管理工装库
     /// </summary>
     public class FoundationProcedureAppService : ApplicationService
     {
@@ -54,6 +58,66 @@ namespace Finance.BaseLibrary
             // 数据返回
             return new PagedResultDto<FoundationProcedureDto>(totalCount, dtos);
         }
+
+        /// <summary>
+        /// 工装库数据导入
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<bool> UploadFoundationProcedure(IFormFile file)
+        {
+            //打开上传文件的输入流
+            Stream stream = file.OpenReadStream();
+
+            //根据文件流创建excel数据结构
+            IWorkbook workbook = WorkbookFactory.Create(stream);
+            stream.Close();
+
+            //尝试获取第一个sheet
+            var sheet = workbook.GetSheetAt(3);
+            List<FoundationProcedureDto> list = new List<FoundationProcedureDto>();
+            //判断是否获取到 sheet
+            if (sheet != null)
+            {
+                //跳过表头
+                for (int i = 2; i < 1000; i++)//100为自定义，实际循环中不会达到
+                {
+                    var initRow = sheet.GetRow(i);
+                    if (initRow == null) break;
+                    var s1 = initRow.GetCell(1);
+                    var s2 = initRow.GetCell(2);
+                    if (null == initRow.GetCell(1) || string.IsNullOrEmpty(initRow.GetCell(2).ToString()))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        FoundationProcedureDto entity = new FoundationProcedureDto();
+                        var maxId = this._foundationProcedureRepository.GetAll().Max(t => t.Id);
+                        entity.Id = maxId + 1;
+                        entity.IsDeleted = false;
+                        entity.ProcessName = initRow.GetCell(2).ToString();
+                        entity.ProcessNumber = initRow.GetCell(3).ToString();
+                        entity.InstallationName = initRow.GetCell(4).ToString();
+                        entity.InstallationPrice = decimal.Parse(initRow.GetCell(5).ToString());
+                        entity.InstallationSupplier = initRow.GetCell(6).ToString();
+                        entity.TestName = initRow.GetCell(7).ToString();
+                        entity.TestPrice = decimal.Parse(initRow.GetCell(8).ToString());
+                        entity.CreationTime = DateTime.Now;
+                        entity.LastModificationTime = DateTime.Now;
+                        if (AbpSession.UserId != null)
+                        {
+                            entity.CreatorUserId = AbpSession.UserId.Value;
+                            entity.LastModifierUserId = AbpSession.UserId.Value;
+                        }
+                        var entity2 = ObjectMapper.Map<FoundationProcedureDto, FoundationProcedure>(entity, new FoundationProcedure());
+                        var result = await this._foundationProcedureRepository.InsertAsync(entity2);
+                    }
+                }
+            }
+            return true;
+        }
+
 
         /// <summary>
         /// 获取修改
