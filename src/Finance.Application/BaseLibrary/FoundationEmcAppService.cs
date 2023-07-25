@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
+using Finance.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,26 @@ namespace Finance.BaseLibrary
     public class FoundationEmcAppService : ApplicationService
     {
         private readonly IRepository<FoundationEmc, long> _foundationEmcRepository;
+        private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<FoundationLogs, long> _foundationLogsRepository;
+        /// <summary>
+        /// 日志类型
+        /// </summary>
+        private readonly int logType = 2;
         /// <summary>
         /// .ctor
         /// </summary>
-        /// <param name="foundationEmcRepository"></param>
+        /// <param name="foundationreliableRepository"></param>
         public FoundationEmcAppService(
-            IRepository<FoundationEmc, long> foundationEmcRepository)
+            IRepository<FoundationEmc, long> foundationreliableRepository,
+            IRepository<User, long> userRepository,
+            IRepository<FoundationLogs, long> foundationLogsRepository)
         {
-            _foundationEmcRepository = foundationEmcRepository;
+            _foundationEmcRepository = foundationreliableRepository;
+            _userRepository = userRepository;
+            _foundationLogsRepository = foundationLogsRepository;
         }
+
 
         /// <summary>
         /// 详情
@@ -56,6 +68,38 @@ namespace Finance.BaseLibrary
         }
 
         /// <summary>
+        /// 列表-无分页功能
+        /// </summary>
+        /// <param name="input">查询条件</param>
+        /// <returns>结果</returns>
+        public virtual async Task<List<FoundationEmcDto>> GetListAllAsync(GetFoundationEmcsInput input)
+        {
+            // 设置查询条件
+            var query = this._foundationEmcRepository.GetAll().Where(t => t.IsDeleted == false);
+            if (!string.IsNullOrEmpty(input.Name))
+            {
+                query = query.Where(t => t.Name.Contains(input.Name));
+            }
+            if (!string.IsNullOrEmpty(input.Classification))
+            {
+                query = query.Where(t => t.Classification.Contains(input.Classification));
+            }
+            // 查询数据
+            var list = query.ToList();
+            //数据转换
+            var dtos = ObjectMapper.Map<List<FoundationEmc>, List<FoundationEmcDto>>(list, new List<FoundationEmcDto>());
+            foreach (var item in dtos)
+            {
+                var user = this._userRepository.GetAll().Where(u => u.Id == item.CreatorUserId).ToList().FirstOrDefault();
+                if (user != null)
+                {
+                    item.LastModifierUserName = user.Name;
+                }
+            }
+            // 数据返回
+            return dtos;
+        }
+        /// <summary>
         /// 获取修改
         /// </summary>
         /// <param name="id">主键</param>
@@ -73,9 +117,20 @@ namespace Finance.BaseLibrary
         /// <returns></returns>
         public virtual async Task<FoundationEmcDto> CreateAsync(FoundationEmcDto input)
         {
-            var entity = ObjectMapper.Map<FoundationEmcDto, FoundationEmc>(input,new FoundationEmc());
+        
+            var entity = ObjectMapper.Map<FoundationEmcDto, FoundationEmc>(input, new FoundationEmc());
+            var maxId = this._foundationEmcRepository.GetAll().Max(t => t.Id);
+            entity.CreationTime = DateTime.Now;
+            entity.Id = maxId + 1;
+            if (AbpSession.UserId != null)
+            {
+                entity.CreatorUserId = AbpSession.UserId.Value;
+                entity.LastModificationTime = DateTime.Now;
+            }
+            entity.LastModificationTime = DateTime.Now;
             entity = await _foundationEmcRepository.InsertAsync(entity);
-            return ObjectMapper.Map<FoundationEmc, FoundationEmcDto>(entity,new FoundationEmcDto());
+            await this.CreateLog("add");
+            return ObjectMapper.Map<FoundationEmc, FoundationEmcDto>(entity, new FoundationEmcDto());
         }
 
         /// <summary>
@@ -100,6 +155,36 @@ namespace Finance.BaseLibrary
         public virtual async Task DeleteAsync(long id)
         {
             await _foundationEmcRepository.DeleteAsync(s => s.Id == id);
+        }
+
+
+        /// <summary>
+        /// 添加日志
+        /// </summary>
+        private async Task<bool> CreateLog(string type)
+        {
+            FoundationLogs entity = new FoundationLogs()
+            {
+                IsDeleted = false,
+                DeletionTime = DateTime.Now,
+                LastModificationTime = DateTime.Now,
+                Remark = "test",
+                Type = logType,
+                Version = "001"
+            };
+            if (AbpSession.UserId != null)
+            {
+                entity.LastModifierUserId = AbpSession.UserId.Value;
+                if ("add".Equals(type))
+                {
+                    entity.CreatorUserId = AbpSession.UserId.Value;
+                    entity.CreationTime = DateTime.Now;
+                }
+            }
+            var maxId = this._foundationLogsRepository.GetAll().Max(t => t.Id);
+            entity.Id = maxId + 1;
+            entity = await _foundationLogsRepository.InsertAsync(entity);
+            return true;
         }
     }
 }
