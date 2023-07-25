@@ -23,5 +23,9 @@ namespace Finance.BaseLibrary
         public string ProcessNumber { get; set; }
         public string TestName { get; set; }
         public System.Nullable<System.Decimal> TestPrice { get; set; }
+        /// <summary>
+        /// 维护人
+        /// </summary>
+        public string LastModifierUserName { get; set; }
     }
 }
