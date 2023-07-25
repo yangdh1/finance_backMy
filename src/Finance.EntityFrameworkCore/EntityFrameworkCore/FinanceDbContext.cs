@@ -434,7 +434,7 @@ namespace Finance.EntityFrameworkCore
             modelBuilder.Entity<ProcessHoursEnterFrock>().ToTable("ProcessHoursEnterFrock");
             modelBuilder.Entity<ProcessHoursEnteritem>().ToTable("ProcessHoursEnteritem");
             modelBuilder.Entity<ProcessHoursEnterLine>().ToTable("ProcessHoursEnterLine");
-            modelBuilder.Entity<ProcessHoursEnterUph>().ToTable("ProcessHoursEnterLine");
+            modelBuilder.Entity<ProcessHoursEnterUph>().ToTable("ProcessHoursEnterUph");
 
             base.OnModelCreating(modelBuilder);
         }
