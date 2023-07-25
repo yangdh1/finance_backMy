@@ -28,6 +28,7 @@ using Finance.MakeOffers;
 using Finance.MultiTenancy;
 using Finance.Nre;
 using Finance.PriceEval;
+using Finance.Processes;
 using Finance.ProductDevelopment;
 using Finance.ProductionControl;
 using Finance.ProjectManagement;
@@ -231,7 +232,47 @@ namespace Finance.EntityFrameworkCore
         /// 物流信息录入
         /// </summary>
         public virtual DbSet<Logisticscost> Logisticscost { get; set; }
-        
+        /// <summary>
+        /// 工序维护表
+        /// </summary>
+        public virtual DbSet<BaseProcessMaintenance> BaseProcessMaintenance { get; set; }
+        /// <summary>
+        /// Bom录入
+        /// </summary>
+        public virtual DbSet<BomEnter> BomEnter { get; set; }
+        /// <summary>
+        /// Bom录入
+        /// </summary>
+        public virtual DbSet<BomEnterTotal> BomEnterTotal { get; set; }
+        /// <summary>
+        /// 工序工时导入
+        /// </summary>
+        public virtual DbSet<ProcessHoursEnter> ProcessHoursEnter { get; set; }
+        /// <summary>
+        /// 工序工时导入设备信息
+        /// </summary> 
+        public virtual DbSet<ProcessHoursEnterDevice> ProcessHoursEnterDevice { get; set; }
+        /// <summary>
+        /// 工序工时导入工装治具
+        /// </summary>
+        public virtual DbSet<ProcessHoursEnterFixture> ProcessHoursEnterFixture { get; set; }
+        /// <summary>
+        /// 工序工时导入硬件设备
+        /// </summary>
+        public virtual DbSet<ProcessHoursEnterFrock> ProcessHoursEnterFrock { get; set; }
+        /// <summary>
+        /// 工序工时导入年份数据
+        /// </summary>
+        public virtual DbSet<ProcessHoursEnteritem> ProcessHoursEnteritem { get; set; }
+        /// <summary>
+        /// 工序工时导入线体数量分摊率
+        /// </summary>
+        public virtual DbSet<ProcessHoursEnterLine> ProcessHoursEnterLine { get; set; }
+        /// <summary>
+        /// 工序工时导入UPH率
+        /// </summary>
+        public virtual DbSet<ProcessHoursEnterUph> ProcessHoursEnterUph { get; set; }
+
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options)
             : base(options)
         {
@@ -384,6 +425,16 @@ namespace Finance.EntityFrameworkCore
             modelBuilder.Entity<FoundationWorkingHour>().ToTable("FoundationWorkingHour");
             modelBuilder.Entity<FoundationWorkingHourItem>().ToTable("FoundationWorkingHourItem");
             modelBuilder.Entity<Logisticscost>().ToTable("LogisticsCost");
+            modelBuilder.Entity<BaseProcessMaintenance>().ToTable("BaseProcessMaintenance");
+            modelBuilder.Entity<BomEnter>().ToTable("BomEnter");
+            modelBuilder.Entity<BomEnterTotal>().ToTable("BomEnterTotal");
+            modelBuilder.Entity<ProcessHoursEnter>().ToTable("ProcessHoursEnter");
+            modelBuilder.Entity<ProcessHoursEnterDevice>().ToTable("ProcessHoursEnterDevice");
+            modelBuilder.Entity<ProcessHoursEnterFixture>().ToTable("ProcessHoursEnterFixture");
+            modelBuilder.Entity<ProcessHoursEnterFrock>().ToTable("ProcessHoursEnterFrock");
+            modelBuilder.Entity<ProcessHoursEnteritem>().ToTable("ProcessHoursEnteritem");
+            modelBuilder.Entity<ProcessHoursEnterLine>().ToTable("ProcessHoursEnterLine");
+            modelBuilder.Entity<ProcessHoursEnterUph>().ToTable("ProcessHoursEnterUph");
 
             base.OnModelCreating(modelBuilder);
         }
