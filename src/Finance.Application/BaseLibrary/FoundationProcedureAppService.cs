@@ -93,8 +93,6 @@ namespace Finance.BaseLibrary
                     else
                     {
                         FoundationProcedureDto entity = new FoundationProcedureDto();
-                        var maxId = this._foundationProcedureRepository.GetAll().Max(t => t.Id);
-                        entity.Id = maxId + 1;
                         entity.IsDeleted = false;
                         entity.ProcessName = initRow.GetCell(2).ToString();
                         entity.ProcessNumber = initRow.GetCell(3).ToString();
