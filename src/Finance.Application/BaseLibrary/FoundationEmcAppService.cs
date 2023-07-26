@@ -119,9 +119,7 @@ namespace Finance.BaseLibrary
         {
         
             var entity = ObjectMapper.Map<FoundationEmcDto, FoundationEmc>(input, new FoundationEmc());
-            var maxId = this._foundationEmcRepository.GetAll().Max(t => t.Id);
             entity.CreationTime = DateTime.Now;
-            entity.Id = maxId + 1;
             if (AbpSession.UserId != null)
             {
                 entity.CreatorUserId = AbpSession.UserId.Value;
